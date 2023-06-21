@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<script>
+    function copyAdressToClipoard() {
+        let address = document.getElementById("address").textContent;
+        navigator.clipboard.writeText(address);
+    }
+</script>
+<body>
+    <h1 id="address">{{ address.login }}@{{ address.domain }}</h1>
+    <button onclick="copyAdressToClipoard()">Copy address</button>
+
+    {% for message in messages %}
+    <div>
+        <a href="{% url  'web_app-message' %}?login={{ address.login }}&domain={{ address.domain }}&id={{ message.external_id }}"">
+            <p>{{ message.external_id }}</p>
+            <p>{{ message.sender }}</p>
+            <p>{{ message.subject }}</p>
+            <p>{{ message.date }}</p>
+        </a>
+    </div>
+    {% endfor %}
+</body>
+</html>

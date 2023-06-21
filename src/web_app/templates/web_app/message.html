@@ -1,0 +1,10 @@
+{% extends "web_app/base.html" %}
+
+{% block content %} 
+<div width="70%">
+    <div>Subject: {{ subject }}</div>
+    <div>From: {{ sender }}</div>
+    <div>Date: {{ date }}</div>
+    <div>{{ content|safe }}</div>
+</div>
+{% endblock content %}

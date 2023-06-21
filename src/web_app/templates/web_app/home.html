@@ -1,0 +1,22 @@
+{% extends "web_app/base.html" %}
+
+{% block content %} 
+    <h1>TempoMail</h1>
+    <form action="{% url 'web_app-get_new_address' %}">
+        <input type="submit" value="Get a new address" />
+    </form>
+    <div>Your addresses:</div>
+    <div>
+    {% for address in addresses %}
+    <div>
+        <a href="{% url 'web_app-inbox'%}?login={{ address.login }}&domain={{ address.domain }}">
+            <p>{{ address.login }}@{{address.domain}}</p>
+            <p>Inbox</p>
+        </a>
+        <a href="{% url 'web_app-delete_address'%}?login={{ address.login }}&domain={{ address.domain }}">
+           Delete
+        </a>
+    </div>
+    {% endfor %}
+    </div>
+{% endblock content %}
