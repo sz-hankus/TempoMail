@@ -11,5 +11,5 @@
 This will log everything to your terminal. If you wish to run 
 the service in detached mode run this:
 ```shell
-    docker-compose up
+    docker-compose up -d
 ```
