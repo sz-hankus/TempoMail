@@ -1,23 +1,28 @@
 {% extends "web_app/base.html" %}
 
 {% block content %} 
-<h1 id="address">{{ address.login }}@{{ address.domain }}</h1>
-<button onclick="copyAdressToClipoard()">Copy address</button>
+<div class="px-5 pt-3 h-full min-h-screen bg-cover bg-gradient-to-tr from-blue-300 to-lime-100">
+<h1 class="whitespace-nowrap mb-5 font-extrabold text-gray-900 dark:text-white text-2xl md:text-5xl lg:text-6xl" id="address">{{ address.login }}@{{ address.domain }}</h1>
+    <button onclick="copyAdressToClipoard()" 
+    class="mb-5 max-w-xs transition duration-300 ease-in-out hover:scale-110 inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+    >Copy address</button>
 
-{% for message in messages %}
-<div>
-    <a href="{% url  'web_app-message' %}?login={{ address.login }}&domain={{ address.domain }}&id={{ message.external_id }}"">
-        <p>{{ message.external_id }}</p>
-        <p>{{ message.sender }}</p>
-        <p>{{ message.subject }}</p>
-        <p>{{ message.date }}</p>
-    </a>
+    <div class="mb-5">Your inbox:</div>
+    {% for message in messages %}
+    <div class="mb-3 border-solid border-2 border-indigo-600 max-w-fit">
+        <a href="{% url  'web_app-message' %}?login={{ address.login }}&domain={{ address.domain }}&id={{ message.external_id }}"">
+            <p>{{ message.external_id }}</p>
+            <p>{{ message.sender }}</p>
+            <p>{{ message.subject }}</p>
+            <p>{{ message.date }}</p>
+        </a>
+    </div>
+    {% endfor %}
+    <script defer>
+        function copyAdressToClipoard() {
+            let address = document.getElementById("address").textContent;
+            navigator.clipboard.writeText(address);
+        }
+    </script>
 </div>
-{% endfor %}
-<script defer>
-    function copyAdressToClipoard() {
-        let address = document.getElementById("address").textContent;
-        navigator.clipboard.writeText(address);
-    }
-</script>
 {% endblock content %}
