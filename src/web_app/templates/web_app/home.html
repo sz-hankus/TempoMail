@@ -3,19 +3,31 @@
 
 {% block content %} 
 <div class="h-full min-h-screen bg-cover bg-gradient-to-tr from-blue-300 to-lime-100">
-    <div class="sm:container sm:mx-auto px-100 pt-10 text-center">
-        <div class="flex items-center justify-center flex-none md:flex-none">
-            <h1 class="mb-5 text-6xl font-extrabold text-gray-900 dark:text-white lg:text-6xl"><span class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Tempo</span>Mail</h1>
-            <svg width="5.5em" height="5.5em" class="flex-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M21 3C21.5523 3 22 3.44772 22 4V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V19H20V7.3L12 14.5L2 5.5V4C2 3.44772 2.44772 3 3 3H21ZM8 15V17H0V15H8ZM5 10V12H0V10H5ZM19.5659 5H4.43414L12 11.8093L19.5659 5Z"></path></svg>
-        </div>  
+    <div class="flex items-center justify-center flex-none md:flex-none py-4">
+        <div class="flex justify-center align-middle">
+            <span class="mb-5 text-6xl align-middle font-extrabold text-gray-900 lg:text-6xl text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Tempo</span>
+            <span class="mb-5 text-6xl font-extrabold text-gray-900 flex justify-center">Mail</span>
+        </div>
+        <div class="flex items-center h-14">
+            <svg class="w-16 h-16" viewBox="-2 3 25 25">
+                <path d="M21 3C21.5523 3 22 3.44772 22 4V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V19H20V7.3L12 14.5L2 5.5V4C2 3.44772 2.44772 3 3 3H21ZM8 15V17H0V15H8ZM5 10V12H0V10H5ZM19.5659 5H4.43414L12 11.8093L19.5659 5Z"></path>
+            </svg>
+        </div>
+    </div>
+    
+    <!-- Main container -->
+    <div class="sm:container sm:mx-auto px-20 text-center">
+        <!-- New address button -->
         <form action="{% url 'web_app-get_new_address' %}" class="mb-5 max-w-xs transition duration-300 ease-in-out hover:scale-110 inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
             <input type="submit" value="Get a new address"/>
         </form>
 
-        <div class="mb-5">Your addresses:</div>
-        <div class="grid-cols-1 grid-flow-rows auto-rows-max gap-4">
+        <div class="mb-5 text-lg">Your addresses:</div>
+
+        <!-- Address list -->
+        <div class="grid-cols-1 grid-flow-rows auto-rows-max gap-4 bg-slate-50 shadow-2xl rounded-lg">
             {% for address in addresses %}
-            <div class="mb-3">
+            <div class="mb-3 flex flex-col space-y-1 p-1 hover:bg-slate-200 hover:rounded-lg">
                 <!-- address -->
                 <a href="{% url 'web_app-inbox'%}?login={{ address.login }}&domain={{ address.domain }}">
                     <p class="font-mono">{{ address.login }}@{{address.domain}}</p>
@@ -40,10 +52,10 @@
                     </a>
 
                     <!-- Timer -->
-                    <div class="timer font-mono" data-expiryTmstmp="{{ address.expiry_time.timestamp }}">
-                        <span id="minutes"></span>
-                        <span id="separator">:</span>
-                        <span id="seconds"></span>
+                    <div class="timer font-mono flex align-middle justify-center" data-expiryTmstmp="{{ address.expiry_time.timestamp }}">
+                        <span id="minutes" class="w-7 bg-slate-600 text-slate-50 p-1 m-0.5 rounded-md"></span>
+                        <!-- <span id="separator" class="">:</span> -->
+                        <span id="seconds" class="w-7 bg-slate-600 text-slate-50 p-1 m-0.5 rounded-md"></span>
                     </div>
 
                 </div>
