@@ -18,7 +18,7 @@
             <div class="mb-3">
                 <!-- address -->
                 <a href="{% url 'web_app-inbox'%}?login={{ address.login }}&domain={{ address.domain }}">
-                    <p>{{ address.login }}@{{address.domain}}</p>
+                    <p class="font-mono">{{ address.login }}@{{address.domain}}</p>
                 </a>
 
                 <!-- below the address -->
@@ -40,7 +40,7 @@
                     </a>
 
                     <!-- Timer -->
-                    <div class="timer" data-expiryTmstmp="{{ address.expiry_time.timestamp }}">
+                    <div class="timer font-mono" data-expiryTmstmp="{{ address.expiry_time.timestamp }}">
                         <span id="minutes"></span>
                         <span id="separator">:</span>
                         <span id="seconds"></span>
