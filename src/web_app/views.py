@@ -63,7 +63,7 @@ def message(request: HttpRequest):
     if not all((user, address, message)):
         raise BadRequest('No such message')
     
-    return render(request, 'web_app/message.html', model_to_dict(message))
+    return render(request, 'web_app/message.html', {'message': message})
 
 
 def get_new_address(request: HttpRequest):

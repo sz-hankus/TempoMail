@@ -13,14 +13,17 @@ class UserManager(models.Manager):
         user = User.objects.filter(uuid=uuid).first()
         if user: 
             user.delete()
-            logger.log(1, f'user {user.uuid} deleted')
+            logger.info(f'user {user.uuid} terminated')
 
     def create_new(self, uuid: str):
         expiry_time = datetime.now() + timedelta(seconds=config.USER_LIFETIME)
         new_user, created = self.get_or_create(uuid=uuid, expiry_time=expiry_time)
         if not created:
             raise Exception(f'Attempted to create user that already exists ({uuid})')
+        
+        # schedule termination
         self.terminate_user.apply_async((uuid,), countdown=config.USER_LIFETIME)
+        logger.info(f'user {new_user.uuid}, scheduled termination at {expiry_time}')
         return new_user
         
 
@@ -46,7 +49,7 @@ class AddressManager(models.Manager):
         address = Address.objects.filter(login=login, domain=domain).first()
         if address: 
             address.delete()
-            logger.log(1, f'address {address.login}@{address.domain} deleted')
+            logger.debug(f'address {address.login}@{address.domain} terminated')
     
     def create_new(self, login: str, domain: str, uuid: str):
         user = User.objects.filter(uuid=uuid).first()
@@ -54,8 +57,10 @@ class AddressManager(models.Manager):
         new_address, created = self.get_or_create(login=login, domain=domain, user=user, expiry_time=expiry_time)
         if not created:
             raise Exception(f'Attempted to create an address that already exists ({login}@{domain})')
+
         # schedule termination
         self.terminate_address.apply_async((login, domain), countdown=config.ADDRESS_LIFETIME)
+        logger.debug(f'address {new_address.login}@{new_address.domain}, scheduled termination at {expiry_time}')
         return new_address
 
 
@@ -84,6 +89,9 @@ class Message(models.Model):
     date = models.DateTimeField()
     address = models.ForeignKey(Address, on_delete=models.CASCADE) # recipient 
     
+    def formatted_date(self) -> str:
+        return self.date.strftime('%-d %B %Y, %H:%M')
+
     def __str__(self):
         return f'{self.external_id}: from: {self.sender} subject: {self.subject}'
 
