@@ -1,4 +1,5 @@
 {% extends "web_app/base.html" %}
+{% load static %}
 
 {% block content %} 
 <div class="h-screen bg-cover bg-gradient-to-tr from-blue-300 to-lime-100">
@@ -19,6 +20,12 @@
                 <p>{{ address.login }}@{{address.domain}}</p>
                 <p>Inbox</p>
             </a>
+            <div class="timer" data-expiryTmstmp="{{ address.expiry_time.timestamp }}">
+                <p>Expiry time: {{ address.expiry_time.timestamp }}</p>
+                <span id="minutes"></span>
+                <span id="separator">:</span>
+                <span id="seconds"></span>
+            </div>
             <a href="{% url 'web_app-delete_address'%}?login={{ address.login }}&domain={{ address.domain }}">
             Delete
             </a>
@@ -28,4 +35,6 @@
     </div>
 </div>
     
+<script defer src="{% static 'web_app/updateTimers.js' %}">
+</script>
 {% endblock content %}
