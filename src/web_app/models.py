@@ -32,7 +32,7 @@ class User(models.Model):
     objects = UserManager()
     # Properties
     uuid = models.CharField(max_length=36)
-    expiry_time = models.DateTimeField(default=datetime.now())
+    expiry_time = models.DateTimeField(default=datetime.now, blank=True)
 
     def get_time_left(self) -> int:
         no_timezone = self.expiry_time.replace(tzinfo=None)
@@ -69,7 +69,7 @@ class Address(models.Model):
     # Properties
     login = models.TextField()
     domain = models.TextField()
-    expiry_time = models.DateTimeField(default=datetime.now())
+    expiry_time = models.DateTimeField(default=datetime.now, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_time_left(self) -> int:
