@@ -3,17 +3,16 @@ version: '3.3'
 services:
   tempomail:
     image: tempomail
-    build: .
     volumes:
       - ./src/db.sqlite3:/app/src/db.sqlite3
     ports:
      - 8000:8000
     environment:
-      - DEBUG=False
+      - DEBUG=True
       - REDIS_HOST=redis
       # lifetimes in seconds
       - USER_LIFETIME=3600 
-      - ADDRESS_LIFETIME=60
+      - ADDRESS_LIFETIME=600
     depends_on:
        - redis
        - celery
@@ -24,11 +23,11 @@ services:
     volumes:
       - ./src/db.sqlite3:/app/src/db.sqlite3
     environment:
-      - DEBUG=False
+      - DEBUG=True
       - REDIS_HOST=redis
       # lifetimes in seconds
       - USER_LIFETIME=3600 
-      - ADDRESS_LIFETIME=60
+      - ADDRESS_LIFETIME=600
     depends_on:
        - redis
   
