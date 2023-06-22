@@ -1,10 +1,16 @@
 {% extends "web_app/base.html" %}
 
 {% block content %} 
-<div width="70%">
-    <div>Subject: {{ subject }}</div>
-    <div>From: {{ sender }}</div>
-    <div>Date: {{ date }}</div>
-    <div>{{ content|safe }}</div>
+<div width="70%" class="h-full min-h-screen bg-cover bg-gradient-to-tr from-blue-300 to-lime-100">
+    <div class="ml-5">
+        <div class="break-words"><span style="color:blue;opacity:0.7">Subject: </span>{{ subject }}</div>
+        <div><span style="color:blue;opacity:0.7">From: </span>{{ sender }}</div>
+        <div><span style="color:blue;opacity:0.7">Date: </span>{{ date }}</div>
+    </div>    
+    <div class="mb-3 border-solid border-4 border-indigo-600 break-words m-5 bg-white">
+        <div class="m-2">
+            {{ content|safe }}
+        </div>
+    </div>
 </div>
 {% endblock content %}
