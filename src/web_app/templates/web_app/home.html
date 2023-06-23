@@ -16,7 +16,7 @@
     </div>
     
     <!-- Main container -->
-    <div class="sm:container sm:mx-auto px-20 text-center">
+    <div class="container mx-auto lg:px-20 md:px-14 sm:px-10 text-center">
         <!-- New address button -->
         <form action="{% url 'web_app-get_new_address' %}" class="mb-5 max-w-xs transition duration-300 ease-in-out hover:scale-110 inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
             <input type="submit" value="Get a new address"/>
@@ -30,7 +30,7 @@
             <div class="mb-3 flex flex-col space-y-1 p-1 hover:bg-slate-200 hover:rounded-lg">
                 <!-- address -->
                 <a href="{% url 'web_app-inbox'%}?login={{ address.login }}&domain={{ address.domain }}">
-                    <p class="font-mono">{{ address.login }}@{{address.domain}}</p>
+                    <p class="font-mono break-words">{{ address.login }}@{{address.domain}}</p>
                 </a>
 
                 <!-- below the address -->
