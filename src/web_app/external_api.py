@@ -16,17 +16,12 @@ def get_random_address() -> tuple[str, str]:
     return (login, choice(domains))
 
 
-def fetch_message_list(address: models.Address) -> list[dict]:
+def update_messages(address: models.Address) -> None:
+    """
+    Fetches and saves messages which do not exist in the database yet.  
+    """
     login, domain = address.login, address.domain
-    data = loads(requests.request('GET', f'{API_BASE}?action=getMessages&login={login}&domain={domain}').content.decode('utf-8'))
-    return data
-
-
-def save_new_from_list(address: models.Address, message_list: list[dict]) -> None:
-    """
-    Saves messages from the message_list which do not exist in the database yet.  
-    message_list should be returned by fetch_message_list
-    """
+    message_list = loads(requests.request('GET', f'{API_BASE}?action=getMessages&login={login}&domain={domain}').content.decode('utf-8'))
     for message in message_list:
         # skip the already existing messages
         if models.Message.objects.filter(address=address, external_id=message['id']).exists():

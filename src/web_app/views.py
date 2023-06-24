@@ -38,8 +38,7 @@ def inbox(request: HttpRequest):
         raise BadRequest('No such address')
 
     # make a request to the external API and save new messages
-    message_list = external_api.fetch_message_list(address)
-    external_api.save_new_from_list(address, message_list)
+    external_api.update_messages(address)
 
     context = {
         'title': f'{login}@{domain} inbox',
