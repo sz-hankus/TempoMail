@@ -27,10 +27,10 @@
         <!-- Address list -->
         <div class="grid-cols-1 grid-flow-rows auto-rows-max gap-4 bg-slate-50 shadow-2xl rounded-lg">
             {% for address in addresses %}
-            <div class="mb-3 flex flex-col space-y-1 p-1 hover:bg-slate-200 hover:rounded-lg">
+            <div id="{{ address.full_address }}" class="mb-3 flex flex-col space-y-1 p-1 hover:bg-slate-200 hover:rounded-lg">
                 <!-- address -->
                 <a href="{% url 'web_app-inbox'%}?login={{ address.login }}&domain={{ address.domain }}">
-                    <p class="font-mono break-words">{{ address.login }}@{{address.domain}}</p>
+                    <p class="font-mono break-words">{{ address.full_address }}</p>
                 </a>
 
                 <!-- below the address -->
