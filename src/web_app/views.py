@@ -21,7 +21,7 @@ def home(request: HttpRequest):
         new_user = models.User.objects.create_new(uuid)
         return render(request, 'web_app/home.html', {'addresses': []})
 
-    user = models.User.objects.filter(uuid=uuid).first()
+    user = models.User.objects.get(uuid=uuid)
     addresses = models.Address.objects.filter(user=user)
     return render(request, 'web_app/home.html', {'addresses': addresses})
 
@@ -32,8 +32,8 @@ def inbox(request: HttpRequest):
     domain = request.GET.get('domain', None)
     if not login or not domain:
         raise BadRequest('HTTP parameters (login or domain) were not set')
-    user = models.User.objects.filter(uuid=uuid).first()
-    address = models.Address.objects.filter(user=user, login=login, domain=domain).first()
+    user = models.User.objects.get(uuid=uuid)
+    address = models.Address.objects.get(user=user, login=login, domain=domain)
     if not address:
         raise BadRequest('No such address')
 
@@ -41,7 +41,7 @@ def inbox(request: HttpRequest):
     external_api.update_messages(address)
 
     context = {
-        'title': f'{login}@{domain} inbox',
+        'title': f'{address.full_address()} inbox',
         'address': address,
         'messages': models.Message.objects.filter(address=address).all(),
     }
@@ -56,9 +56,9 @@ def message(request: HttpRequest):
     if not all((login, domain, message_id)):
         raise BadRequest('HTTP query parameters (login, domain or id) were not set')
 
-    user = models.User.objects.filter(uuid=uuid).first()
-    address = models.Address.objects.filter(user=user, login=login, domain=domain).first()
-    message = models.Message.objects.filter(external_id=message_id, address=address).first()
+    user = models.User.objects.get(uuid=uuid)
+    address = models.Address.objects.get(user=user, login=login, domain=domain)
+    message = models.Message.objects.get(external_id=message_id, address=address)
     if not all((user, address, message)):
         raise BadRequest('No such message')
     
@@ -67,7 +67,7 @@ def message(request: HttpRequest):
 
 def get_new_address(request: HttpRequest):
     uuid = request.COOKIES.get('uuid', None)
-    user = models.User.objects.filter(uuid=uuid).first()
+    user = models.User.objects.get(uuid=uuid)
     if not uuid or not user:
         return redirect('/')
 
@@ -86,7 +86,7 @@ def delete_address(request: HttpRequest):
     if not login or not domain:
         raise BadRequest('HTTP query parameters (login or domain) were not set')
     
-    address = models.Address.objects.filter(login=login, domain=domain).first()
+    address = models.Address.objects.get(login=login, domain=domain)
     if not address:
         raise BadRequest(f'Address {login}@{domain} does not exist')
 

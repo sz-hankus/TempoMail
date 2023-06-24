@@ -7,7 +7,13 @@ from TempoMail import config
 
 logger = get_task_logger(__name__)
 
-class UserManager(models.Manager):
+# Manager with common methods
+class BaseManager(models.Manager):
+    def get(self, **kwargs):
+        return self.filter(**kwargs).first()
+        
+
+class UserManager(BaseManager):
     @shared_task
     def terminate_user(uuid: str) -> None:
         user = User.objects.filter(uuid=uuid).first()
@@ -20,12 +26,10 @@ class UserManager(models.Manager):
         new_user, created = self.get_or_create(uuid=uuid, expiry_time=expiry_time)
         if not created:
             raise Exception(f'Attempted to create user that already exists ({uuid})')
-        
         # schedule termination
         self.terminate_user.apply_async((uuid,), countdown=config.USER_LIFETIME)
         logger.info(f'user {new_user.uuid}, scheduled termination at {expiry_time}')
         return new_user
-        
 
 
 class User(models.Model):
@@ -43,7 +47,7 @@ class User(models.Model):
         return f'{self.uuid}'
 
 
-class AddressManager(models.Manager):
+class AddressManager(BaseManager):
     @shared_task
     def terminate_address(login: str, domain: str) -> None:
         address = Address.objects.filter(login=login, domain=domain).first()
@@ -57,7 +61,6 @@ class AddressManager(models.Manager):
         new_address, created = self.get_or_create(login=login, domain=domain, user=user, expiry_time=expiry_time)
         if not created:
             raise Exception(f'Attempted to create an address that already exists ({login}@{domain})')
-
         # schedule termination
         self.terminate_address.apply_async((login, domain), countdown=config.ADDRESS_LIFETIME)
         logger.debug(f'address {new_address.login}@{new_address.domain}, scheduled termination at {expiry_time}')
@@ -72,16 +75,21 @@ class Address(models.Model):
     expiry_time = models.DateTimeField(default=datetime.now, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def full_address(self) -> str:
+        return f'{self.login}@{self.domain}'
+
     def get_time_left(self) -> int:
         no_timezone = self.expiry_time.replace(tzinfo=None)
         seconds = (no_timezone - datetime.now()).seconds
         return seconds if seconds >= 0 else 0
 
     def __str__(self):
-        return f'{self.login}@{self.domain}, belongs to: {self.user.uuid}'
+        return f'{self.full_address()}, belongs to: {self.user.uuid}'
 
     
 class Message(models.Model):
+    objects = BaseManager()
+    # Properties
     external_id = models.IntegerField(default=0)
     sender = models.TextField()
     subject = models.TextField()
