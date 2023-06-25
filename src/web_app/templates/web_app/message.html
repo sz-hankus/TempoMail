@@ -7,6 +7,15 @@
         <div><span style="color:blue;opacity:0.7">From: </span>{{ message.sender }}</div>
         <div><span style="color:blue;opacity:0.7">Date: </span>{{ message.formatted_date }}</div>
     </div>    
+    <!-- Attachments -->
+    <div>
+    {% for attachment in attachments %}
+        <p>{{ attachment.file_name }}</p>
+        <p>{{ attachment.content_type }}</p>
+        <p>{{ attachment.size | filesizeformat }}</p>
+        <a href="{{ attachment.get_download_url }}">download</a>
+    {% endfor %}
+    </div>
     <div class="mb-3 bg-slate-50 rounded-lg break-words m-5">
         <div class="m-2">
             {{ message.content|safe }}

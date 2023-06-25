@@ -28,13 +28,21 @@ def update_messages(address: models.Address) -> None:
             continue
         message_data = fetch_message(address, message['id'])
         # get_or_create for safety
-        models.Message.objects.get_or_create(
+        new_message, _ = models.Message.objects.get_or_create(
             external_id=message_data['id'],
             sender=message_data['from'],
             subject=message_data['subject'],
             content=message_data['body'],
             date=datetime.strptime(message_data['date'], TIME_FORMAT),
-            address=address)            
+            address=address)
+
+        for attachment in message_data.get('attachments', []):
+            models.Attachment.objects.get_or_create(
+                file_name = attachment['filename'],
+                content_type = attachment['contentType'],
+                size = attachment['size'],
+                message = new_message
+            )
 
 
 def fetch_message(address: models.Address, message_id: str) -> dict:

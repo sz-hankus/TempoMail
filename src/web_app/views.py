@@ -62,7 +62,8 @@ def message(request: HttpRequest):
     if not all((user, address, message)):
         raise BadRequest('No such message')
     
-    return render(request, 'web_app/message.html', {'message': message})
+    attachments = models.Attachment.objects.filter(message=message)
+    return render(request, 'web_app/message.html', {'message': message, 'attachments': attachments})
 
 
 def get_new_address(request: HttpRequest):

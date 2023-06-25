@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 from TempoMail import config
 
 logger = get_task_logger(__name__)
+API_BASE='https://www.1secmail.com/api/v1/'
+
 
 # Manager with common methods
 class BaseManager(models.Manager):
@@ -103,4 +105,19 @@ class Message(models.Model):
     def __str__(self):
         return f'{self.external_id}: from: {self.sender} subject: {self.subject}'
 
-    
+
+class Attachment(models.Model):
+    objects = BaseManager()
+    # Properties
+    file_name = models.TextField()
+    content_type = models.TextField()
+    size = models.IntegerField()
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+
+    def get_download_url(self) -> str:
+        msg = self.message
+        adr = msg.address
+        return f'{API_BASE}/?action=download&login={adr.login}&domain={adr.domain}&id={msg.external_id}&file={self.file_name}'
+
+    def __str__(self):
+        return f'{self.file_name}:, type: {self.content_type}, size: {self.size}'
