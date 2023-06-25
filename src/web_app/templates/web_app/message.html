@@ -2,20 +2,47 @@
 
 {% block content %} 
 <div width="70%" class="h-full min-h-screen bg-cover bg-gradient-to-tr from-blue-300 to-lime-100">
-    <div class="ml-5">
-        <div class="break-words"><span style="color:blue;opacity:0.7">Subject: </span>{{ message.subject }}</div>
-        <div><span style="color:blue;opacity:0.7">From: </span>{{ message.sender }}</div>
-        <div><span style="color:blue;opacity:0.7">Date: </span>{{ message.formatted_date }}</div>
-    </div>    
-    <!-- Attachments -->
-    <div>
-    {% for attachment in attachments %}
-        <p>{{ attachment.file_name }}</p>
-        <p>{{ attachment.content_type }}</p>
-        <p>{{ attachment.size | filesizeformat }}</p>
-        <a href="{{ attachment.get_download_url }}">download</a>
-    {% endfor %}
+    <!-- Subject, sender, date -->
+    <div class="mx-5 bg-slate-50 rounded-lg">
+        <div class="flex flex-row">
+            <div class="flex flex-col w-min bg-slate-300 rounded-l-lg">
+                <p class="p-2 text-right">Subject</p>
+                <p class="p-2 text-right">From</p>
+                <p class="p-2 text-right">Date</p>
+            </div>
+            <div class="flex flex-col px-2">
+                <p class="p-2 text-left">{{ message.subject }}</p>
+                <p class="p-2 text-left">{{ message.sender }}</p>
+                <p class="p-2 text-left">{{ message.formatted_date }}</p>
+            </div>
+        </div>
     </div>
+
+    <!-- Attachments -->
+    {% if attachments %}
+    <div style="min-width: 6rem" class="m-5 w-min flex flex-col bg-slate-50 rounded-lg break-words">
+        <!-- Attachments + icon -->
+        <div class="flex flex-row p-2 bg-slate-300 rounded-t-lg">
+            <span>Attachments</span>
+            <svg class="w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 13.5V8C14 5.79086 12.2091 4 10 4C7.79086 4 6 5.79086 6 8V13.5C6 17.0899 8.91015 20 12.5 20C16.0899 20 19 17.0899 19 13.5V4H21V13.5C21 18.1944 17.1944 22 12.5 22C7.80558 22 4 18.1944 4 13.5V8C4 4.68629 6.68629 2 10 2C13.3137 2 16 4.68629 16 8V13.5C16 15.433 14.433 17 12.5 17C10.567 17 9 15.433 9 13.5V8H11V13.5C11 14.3284 11.6716 15 12.5 15C13.3284 15 14 14.3284 14 13.5Z"></path></svg>
+        </div>
+
+        {% for attachment in attachments %}        
+        <a href="{{ attachment.get_download_url }}">
+            <div class="p-1 flex flex-row justify-between space-x-5 font-mono text-sm hover:underline">
+                <div class="flex flex-row space-x-1">
+                    <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 2.00318V2H19.9978C20.5513 2 21 2.45531 21 2.9918V21.0082C21 21.556 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5501 3 20.9932V8L9 2.00318ZM5.82918 8H9V4.83086L5.82918 8ZM11 4V9C11 9.55228 10.5523 10 10 10H5V20H19V4H11Z"></path></svg>
+                    <span>{{ attachment.file_name }}</span>
+                </div>
+                <span>{{ attachment.size | filesizeformat }}</span>
+                <!-- <a href="{{ attachment.get_download_url }}">download</a> -->
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Mail content -->
     <div class="mb-3 bg-slate-50 rounded-lg break-words m-5">
         <div class="m-2">
             {{ message.content|safe }}
